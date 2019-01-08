@@ -1,0 +1,85 @@
+version: "2"
+services:
+    vulnerable:
+        build: .
+        ports:
+            - "8002:80"
+        volumes:
+            - ./vulnerable:/var/www/html/
+        links:
+            - db
+        networks:
+            - frontend1
+            - backend
+    adminvulnerable:
+        build: .
+        ports:
+            - "8003:80"
+        volumes:
+            - ./adminvulnerable:/var/www/html/
+        links:
+            - db
+        networks:
+            - frontend2
+            - backend
+    invulnerable:
+        build: .
+        ports:
+            - "8004:80"
+        volumes: 
+            - ./invulnerable:/var/www/html/
+        links:
+            - db
+        networks:
+            - frontend3
+            - backend
+    admininvulnerable:
+        build: .
+        ports:
+            - "8005:80"
+        volumes:
+            - ./admininvulnerable:/var/www/html/
+        links:
+            - db
+        networks:
+            - frontend4
+            - backend
+    db:
+        image: mysql:5.7
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: myDb
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test 
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+            - persistent:/var/lib/mysql
+        networks:
+            - backend
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links: 
+            - db:db
+        ports:
+            - 8000:80
+        environment:
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        networks:
+            - backend
+volumes:
+    persistent:
+networks:
+    frontend1:
+        
+    frontend2:
+       
+    frontend3:
+       
+    frontend4:
+       
+    backend:
+  
